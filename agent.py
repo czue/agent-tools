@@ -8,20 +8,32 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Final
 
 from handlers import agent_event_stream_handler
+from dotenv import load_dotenv  # type: ignore[import-not-found]
 from pydantic_ai import Agent, RunContext  # type: ignore[import-not-found]
 
 from make_diff import make_diff_string
-DEFAULT_REPO_PATH = Path(
-    os.environ.get("PEGASUS_REPO_PATH", "/home/czue/src/personal/pegasus")
-)
-DEFAULT_RELEASE_NOTES_PATH = Path(
-    os.environ.get(
-        "PEGASUS_RELEASE_NOTES_PATH",
-        "/home/czue/src/personal/pegasus-docs/src/content/docs/release-notes.mdx",
-    )
-)
+
+PROJECT_ROOT = Path(__file__).parent
+load_dotenv(dotenv_path=PROJECT_ROOT / ".env", override=False)
+
+REPO_ENV_VAR: Final = "PEGASUS_REPO_PATH"
+RELEASE_NOTES_ENV_VAR: Final = "PEGASUS_RELEASE_NOTES_PATH"
+MODEL_ENV_VAR: Final = "PYDANTIC_AI_MODEL"
+
+
+def _required_env(name: str) -> str:
+    try:
+        return os.environ[name]
+    except KeyError as exc:
+        raise RuntimeError(f"Missing required environment variable: {name}") from exc
+
+
+DEFAULT_REPO_PATH = Path(_required_env(REPO_ENV_VAR))
+DEFAULT_RELEASE_NOTES_PATH = Path(_required_env(RELEASE_NOTES_ENV_VAR))
+DEFAULT_MODEL = os.environ.get(MODEL_ENV_VAR, "anthropic:claude-opus-4-5")
 
 
 BASE_INSTRUCTIONS = """You are helping to generate the release notes for an upcoming version of SaaS Pegasus---a
@@ -45,7 +57,7 @@ Important instructions:
   out in a commit message."""
 TOOL_GUIDANCE = f"""
 You can call tools to gather context:
-- Use `get_release_notes` to load the current published notes for style reference. Default path: {DEFAULT_RELEASE_NOTES_PATH}.
+- Use `get_release_notes` to load the current published notes for style reference. Path: {DEFAULT_RELEASE_NOTES_PATH}.
 - Use `make_diff` to pull the markdown-formatted git diff summary for the requested commit range. Default range is main -> develop when none is provided.
 
 Workflow: read the reference notes to mirror tone and structure, call `make_diff` to gather the changes, then draft updated notes. Keep the summary concise (1-2 sentences) followed by a detailed bullet list. Translate template-only changes into user-facing impacts and never mention cookiecutter explicitly.
@@ -61,7 +73,7 @@ class Deps:
 
 
 release_notes_agent = Agent(
-    "anthropic:claude-opus-4-5",
+    DEFAULT_MODEL,
     instructions=AGENT_PROMPT,
     deps_type=Deps,
     retries=2,

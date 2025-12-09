@@ -20,10 +20,14 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "pydantic-ai" },
+    { name = "python-dotenv" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pydantic-ai", specifier = ">=1.28.0" }]
+requires-dist = [
+    { name = "pydantic-ai", specifier = ">=1.28.0" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
+]
 
 [[package]]
 name = "aiohappyeyeballs"
