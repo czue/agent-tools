@@ -36,34 +36,32 @@ DEFAULT_RELEASE_NOTES_PATH = Path(_required_env(RELEASE_NOTES_ENV_VAR))
 DEFAULT_MODEL = os.environ.get(MODEL_ENV_VAR, "anthropic:claude-opus-4-5")
 
 
-BASE_INSTRUCTIONS = """You are helping to generate the release notes for an upcoming version of SaaS Pegasus---a
+AGENT_PROMPT = """
+You are helping to generate the release notes for an upcoming version of SaaS Pegasus---a
 Django SaaS boilerplate built on top of cookicutter.
 
-You will be given a diff summary file containing a set of changes that have been made in
-this release. Your job is to draft the release notes according in the same style used
-in the current release notes (`src/content/docs/release-notes.md`).
+Workflow:
+
+1. First read the reference notes to mirror tone and structure using the `get_release_notes` tool.
+2. Then call `make_diff` to pull the markdown-formatted git diff summary for the requested commit range.
+3. Finally, draft updated notes based on the changes you find.
+
 
 Important instructions:
 
-- Read the existing release notes to get a feel for the style.
+- ALWAYS read the existing release notes to get a feel for the style and format.
 - The general format is: 1-2 sentences describing the release followed by a detailed list of changes.
 - If a feature is large you can call it out into its own section at the top, but if there
   aren't any large features there is no need to do this.
 - Wherever possible use information from the commit messages to understand the intent of the changes.
+- If there are changes in the diffs that aren't in the commit messages, highlight them if they
+  are substantial enough to be worth mentioning, but you can also leave them out.
 - Do NOT EVER mention cookiecutter. If a change only affects cookiecutter markup then translate
   the practical implications of that change in human-readable terms. E.g. "Fixed a bug that only
   applied when teams were enabled".
 - For library upgrades there is no need to mention specific libraries unless explicitly called
-  out in a commit message."""
-TOOL_GUIDANCE = f"""
-You can call tools to gather context:
-- Use `get_release_notes` to load the current published notes for style reference. Path: {DEFAULT_RELEASE_NOTES_PATH}.
-- Use `make_diff` to pull the markdown-formatted git diff summary for the requested commit range. Default range is main -> develop when none is provided.
-
-Workflow: read the reference notes to mirror tone and structure, call `make_diff` to gather the changes, then draft updated notes. Keep the summary concise (1-2 sentences) followed by a detailed bullet list. Translate template-only changes into user-facing impacts and never mention cookiecutter explicitly.
+  out in a commit message.
 """
-
-AGENT_PROMPT = f"{BASE_INSTRUCTIONS}\n\n{TOOL_GUIDANCE}"
 
 
 @dataclass
