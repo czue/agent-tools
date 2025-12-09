@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import os
 import sys
 from dataclasses import dataclass
@@ -19,9 +20,10 @@ from make_diff import make_diff_string
 PROJECT_ROOT = Path(__file__).parent
 load_dotenv(dotenv_path=PROJECT_ROOT / ".env", override=False)
 
-REPO_ENV_VAR: Final = "PEGASUS_REPO_PATH"
-RELEASE_NOTES_ENV_VAR: Final = "PEGASUS_RELEASE_NOTES_PATH"
+REPO_ENV_VAR: Final = "REPO_PATH"
+RELEASE_NOTES_ENV_VAR: Final = "RELEASE_NOTES_PATH"
 MODEL_ENV_VAR: Final = "PYDANTIC_AI_MODEL"
+LOG_LEVEL_ENV_VAR: Final = "LOG_LEVEL"
 
 
 def _required_env(name: str) -> str:
@@ -34,6 +36,17 @@ def _required_env(name: str) -> str:
 DEFAULT_REPO_PATH = Path(_required_env(REPO_ENV_VAR))
 DEFAULT_RELEASE_NOTES_PATH = Path(_required_env(RELEASE_NOTES_ENV_VAR))
 DEFAULT_MODEL = os.environ.get(MODEL_ENV_VAR, "anthropic:claude-opus-4-5")
+DEFAULT_LOG_LEVEL = os.environ.get(LOG_LEVEL_ENV_VAR, "INFO").upper()
+
+
+def _configure_logging() -> None:
+    level = getattr(logging, DEFAULT_LOG_LEVEL, None)
+    if not isinstance(level, int):
+        raise RuntimeError(f"Invalid log level '{DEFAULT_LOG_LEVEL}'. Use standard logging levels (e.g., DEBUG, INFO, WARNING, ERROR).")
+    logging.basicConfig(level=level)
+
+
+_configure_logging()
 
 
 AGENT_PROMPT = """

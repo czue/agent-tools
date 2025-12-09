@@ -7,7 +7,7 @@ from pydantic_ai.messages import (
     FunctionToolResultEvent,
 )
 
-logger = logging.getLogger("pegasus.ai")
+logger = logging.getLogger("agent-tools.events")
 
 
 async def agent_event_stream_handler(ctx, event_stream: AsyncIterable[AgentStreamEvent]):
@@ -15,6 +15,6 @@ async def agent_event_stream_handler(ctx, event_stream: AsyncIterable[AgentStrea
     async for event in event_stream:
         # log any instances of tool calls and results
         if isinstance(event, FunctionToolCallEvent):
-            logger.error(f"🔧 LLM calls tool={event.part.tool_name!r} with args={event.part.args}")
+            logger.info(f"🔧 LLM calls tool={event.part.tool_name!r} with args={event.part.args}")
         elif isinstance(event, FunctionToolResultEvent):
-            logger.error(f"✅ Tool call {event.tool_call_id!r} completed")
+            logger.info(f"✅ Tool call {event.tool_call_id!r} completed")
