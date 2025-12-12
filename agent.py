@@ -72,6 +72,8 @@ Important instructions:
 - Do NOT EVER mention cookiecutter. If a change only affects cookiecutter markup then translate
   the practical implications of that change in human-readable terms. E.g. "Fixed a bug that only
   applied when teams were enabled".
+- If a commit message starts with "invisible:" or "tool:" do NOT mention it in the release notes,
+  and you can ignore the files it modifies.
 - For library upgrades there is no need to mention specific libraries unless explicitly called
   out in a commit message.
 """
