@@ -34,3 +34,7 @@ Generate professional release notes for code changes between git refs.
 - **Never mention cookiecutter** - translate cookiecutter markup changes to human terms
 - **Ignore commits starting with "invisible:" or "tool:"** - don't mention them or their files
 - For library upgrades, only mention specific libraries if explicitly called out in commits
+
+## Additional Resources
+
+- For formatting examples and style reference, see [examples.md](examples.md)
