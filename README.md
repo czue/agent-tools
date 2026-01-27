@@ -15,10 +15,6 @@ Agent tools I'm using in my various workflows.
 
 # Install all skills from the marketplace
 /plugin install agent-tools
-
-# Or use the interactive UI
-/plugin
-# Then go to the Discover tab to browse and install
 ```
 
 ### Usage
