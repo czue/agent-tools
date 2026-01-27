@@ -46,3 +46,19 @@ Copy `.env.example` to `.env` and configure:
 - Filters out lock files (uv.lock, package-lock.json) by default
 
 **handlers.py** - Event stream handler for logging tool calls during agent execution
+
+## Skill Usage (Claude Code)
+
+Install the skill:
+```bash
+npx skills add github:czue/agent-tools
+```
+
+Or manually copy `skills/release-notes/` to `.claude/skills/`.
+
+Usage:
+```
+/release-notes v2024.12.1 HEAD /path/to/reference-notes.mdx
+```
+
+Or let Claude auto-invoke when you ask things like "What changed since the last release?"
