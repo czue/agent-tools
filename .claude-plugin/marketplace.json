@@ -1,17 +1,17 @@
 {
-  "name": "pegasus-skills",
+  "name": "agent-tools",
   "owner": {
-    "name": "SaaS Pegasus",
-    "url": "https://www.saaspegasus.com"
+    "name": "Cory's Agent Tools",
+    "url": "https://www.coryzue.com/"
   },
   "metadata": {
-    "description": "AI agent skills for Django and SaaS Pegasus projects",
+    "description": "AI agent skills used developing SaaS Pegasus and other projects",
     "version": "1.0.0",
     "repository": "https://github.com/czue/agent-tools"
   },
   "plugins": [
     {
-      "name": "pegasus-skills",
+      "name": "agent-tools",
       "description": "Skills for SaaS Pegasus development: release notes generation, and more",
       "source": "./",
       "strict": false,
