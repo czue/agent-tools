@@ -49,9 +49,9 @@ Copy `.env.example` to `.env` and configure:
 
 ## Skill Usage (Claude Code)
 
-Install the skill:
+Install the plugin:
 ```bash
-npx skills add github:czue/agent-tools
+claude plugins add github:czue/agent-tools
 ```
 
 Or manually copy `skills/release-notes/` to `.claude/skills/`.
