@@ -3,13 +3,37 @@ Agent Tools
 
 Agent tools I'm using in my various workflows.
 
-## Tools
+## Skills
 
-- Release notes generator for [SaaS Pegasus](https://www.saaspegasus.com/).
+- **release-notes**: Generate release notes by analyzing git commits and diffs
 
-## Installation
+## Installation (Claude Code)
 
-First set up your environment varibles:
+```bash
+# Add the marketplace
+/plugin marketplace add czue/agent-tools
+
+# Install all skills from the marketplace
+/plugin install agent-tools
+
+# Or use the interactive UI
+/plugin
+# Then go to the Discover tab to browse and install
+```
+
+### Usage
+
+```
+/release-notes v2024.12.1 HEAD /path/to/reference-notes.mdx
+```
+
+Or just ask Claude things like "What changed since the last release?"
+
+## Installation (Python Agent)
+
+The release notes generator can also be run as a standalone Python agent using pydantic-ai.
+
+First set up your environment variables:
 
 ```bash
 cp .env.example .env
