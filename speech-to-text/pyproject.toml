@@ -1,0 +1,15 @@
+[project]
+name = "speech-to-text"
+version = "0.1.0"
+description = "Push-to-talk speech-to-text for Linux"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=1.0",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+local = ["faster-whisper"]
+
+[project.scripts]
+stt = "stt.toggle:main"
