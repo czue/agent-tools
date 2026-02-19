@@ -11,3 +11,6 @@ wheels/
 
 # config
 .env
+
+# Claude Code
+.claude/settings.local.json
