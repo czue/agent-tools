@@ -60,8 +60,13 @@ def load_sender() -> SenderConfig:
     )
 
 
+_DEFAULT_COUNTER = {"last_invoice_number": 0, "last_end_dates": {}}
+
+
 def _load_counter() -> dict:
     counter_path = BASE_DIR / "counter.json"
+    if not counter_path.exists():
+        return _DEFAULT_COUNTER.copy()
     with open(counter_path) as f:
         return json.load(f)
 
