@@ -1,0 +1,18 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  invoice-gen:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: invoice-gen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - run: uv run pytest

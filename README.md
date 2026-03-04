@@ -7,6 +7,14 @@ Agent tools I'm using in my various workflows.
 
 - **release-notes**: Generate release notes by analyzing git commits and diffs
 - **generate-invoice**: Generate PDF invoices from Toggl time tracking data
+- **backup-files**: Backup files to Backblaze B2 using rclone
+- **open-as-html**: Convert markdown/output to styled HTML and open in browser
+- **split-video**: Split wide (3840x1080) side-by-side videos into separate screen and camera files
+
+## Sub-Projects
+
+- **[invoice-gen](./invoice-gen/)**: Standalone CLI tool for generating PDF invoices from Toggl time data
+- **[speech-to-text](./speech-to-text/)**: Push-to-talk speech-to-text CLI for Linux (X11/GNOME)
 
 ## Installation (Claude Code)
 
