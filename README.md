@@ -10,6 +10,7 @@ Agent tools I'm using in my various workflows.
 - **backup-files**: Backup files to Backblaze B2 using rclone
 - **open-as-html**: Convert markdown/output to styled HTML and open in browser
 - **split-video**: Split wide (3840x1080) side-by-side videos into separate screen and camera files
+- **transcript**: Generate HTML transcripts of Claude Code sessions using claude-code-transcripts
 
 ## Sub-Projects
 
