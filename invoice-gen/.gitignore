@@ -1,0 +1,5 @@
+.env
+output/
+.venv/
+clients/*.toml
+!clients/example.toml

@@ -1,0 +1,6 @@
+name = "Acme Corp"
+country = "United States"
+rate = 100.00
+currency = "USD"
+toggl_project_name = "acme"
+line_item_description = "Software development and coordination"
