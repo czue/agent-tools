@@ -6,6 +6,7 @@ Agent tools I'm using in my various workflows.
 ## Skills
 
 - **release-notes**: Generate release notes by analyzing git commits and diffs
+- **generate-invoice**: Generate PDF invoices from Toggl time tracking data
 
 ## Installation (Claude Code)
 

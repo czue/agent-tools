@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice {{ invoice_number }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 40px 50px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 13px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .invoice-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .header .subtitle {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 2px;
+    }
+
+    .header .subtitle ul {
+      margin-top: 2px;
+      margin-left: 20px;
+    }
+
+    .header .subtitle ul li {
+      color: #555;
+    }
+
+    /* Info section: two columns */
+    .info-section {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      margin-bottom: 30px;
+    }
+
+    .info-left {
+      flex: 1;
+    }
+
+    .info-right {
+      flex: 0 0 auto;
+      text-align: right;
+    }
+
+    .info-label {
+      font-weight: 700;
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 2px;
+    }
+
+    .info-left .address-block {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .info-right table {
+      margin-left: auto;
+    }
+
+    .info-right table td {
+      padding: 2px 0;
+      font-size: 13px;
+    }
+
+    .info-right table td.label {
+      font-weight: 700;
+      text-align: right;
+      padding-right: 12px;
+      color: #333;
+    }
+
+    .info-right table td.value {
+      text-align: left;
+      color: #555;
+    }
+
+    /* Line items table */
+    .line-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .line-items-table thead th {
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 0;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .line-items-table thead th.right {
+      text-align: right;
+    }
+
+    .line-items-table tbody td {
+      padding: 10px 0;
+      font-size: 13px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+
+    .line-items-table tbody td.right {
+      text-align: right;
+    }
+
+    .line-items-table .quantity-unit {
+      font-size: 11px;
+      color: #999;
+    }
+
+    /* Totals section */
+    .totals-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 30px;
+    }
+
+    .totals-table {
+      border-collapse: collapse;
+      min-width: 280px;
+    }
+
+    .totals-table td {
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .totals-table td.label {
+      text-align: right;
+      padding-right: 16px;
+      color: #555;
+    }
+
+    .totals-table td.value {
+      text-align: right;
+      color: #333;
+      min-width: 120px;
+    }
+
+    .totals-table tr.balance td {
+      font-weight: 700;
+    }
+
+    .totals-table tr.balance td.value {
+      font-size: 15px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid #ccc;
+      padding-top: 16px;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .footer .footer-label {
+      font-weight: 700;
+      color: #333;
+    }
+
+    .footer .payment-section {
+      margin-top: 8px;
+    }
+
+    .footer .payment-detail {
+      margin-left: 16px;
+    }
+
+    .footer .credit-card-note {
+      font-style: italic;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+
+    <!-- Header -->
+    <div class="header">
+      <h1>{{ sender.name }} {{ client.name.split(' ')[0] }}</h1>
+      <div class="subtitle">
+        Work completed from {{ date_range }}. This includes:
+        <ul>
+          <li>{{ description }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Two-column info section -->
+    <div class="info-section">
+      <div class="info-left">
+        <div class="info-label">From</div>
+        <div class="address-block">
+          {{ sender.company }}<br>
+          {% for line in sender.address.split('\n') %}
+            {{ line }}<br>
+          {% endfor %}
+          Tax ID: {{ sender.tax_id }}
+        </div>
+
+        <div class="info-label">To</div>
+        <div class="address-block">
+          {{ client.name }}<br>
+          {{ client.country }}
+        </div>
+      </div>
+
+      <div class="info-right">
+        <table>
+          <tr>
+            <td class="label">Invoice No.</td>
+            <td class="value">{{ invoice_number }}</td>
+          </tr>
+          <tr>
+            <td class="label">Date</td>
+            <td class="value">{{ invoice_date }}</td>
+          </tr>
+          <tr>
+            <td class="label">Invoice Due</td>
+            <td class="value">{{ due_date }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Line items table -->
+    <table class="line-items-table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th class="right">Quantity</th>
+          <th class="right">Rate</th>
+          <th class="right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ client.line_item_description }}</td>
+          <td class="right">
+            {{ "%.2f"|format(hours) }}<br>
+            <span class="quantity-unit">(hrs)</span>
+          </td>
+          <td class="right">{{ "%.2f"|format(rate) }}</td>
+          <td class="right">{{ currency }} {{ "{:,.2f}".format(amount) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Totals section -->
+    <div class="totals-section">
+      <table class="totals-table">
+        <tr>
+          <td class="label">Sub Total</td>
+          <td class="value">{{ "{:,.2f}".format(amount) }}</td>
+        </tr>
+        <tr>
+          <td class="label">Total</td>
+          <td class="value">{{ currency }} {{ "{:,.2f}".format(amount) }}</td>
+        </tr>
+        <tr>
+          <td class="label">Paid to Date</td>
+          <td class="value">{{ currency }} 0.00</td>
+        </tr>
+        <tr class="balance">
+          <td class="label">Balance</td>
+          <td class="value">{{ currency }} {{ "{:,.2f}".format(amount) }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span class="footer-label">Email:</span> {{ sender.email }}
+
+      <div class="payment-section">
+        <div class="footer-label">Payment details ({{ currency }}):</div>
+        {% for line in sender.payment_details_usd.split('\n') %}
+          <div class="payment-detail">{{ line }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="payment-section">
+        <div class="footer-label">Payment details (ZAR):</div>
+        {% for line in sender.payment_details_zar.split('\n') %}
+          <div class="payment-detail">{{ line }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="credit-card-note">Credit card payment available on request.</div>
+    </div>
+
+  </div>
+</body>
+</html>
