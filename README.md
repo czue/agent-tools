@@ -11,7 +11,7 @@ Agent tools I'm using in my various workflows.
 - **open-as-html**: Convert markdown/output to styled HTML and open in browser
 - **split-video**: Split wide (3840x1080) side-by-side videos into separate screen and camera files
 - **transcript**: Generate HTML transcripts of Claude Code sessions using claude-code-transcripts
-- **review-detail-bugs**: Interactively review AI-generated bug reports (from Detail or similar tools) filed as GitHub issues
+- **review-ai-issues**: Interactively review plausibly AI-generated bug reports filed as GitHub issues
 
 ## Sub-Projects
 

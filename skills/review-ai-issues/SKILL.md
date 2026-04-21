@@ -1,12 +1,12 @@
 ---
-name: review-detail-bugs
-description: Interactively review AI-generated bug reports (from Detail or similar tools) filed as GitHub issues. Use when the user says things like "let's review bug reports," "review detail bugs," or points at a specific detail-app issue.
+name: review-ai-issues
+description: Interactively review plausibly AI-generated bug reports (from Detail, Copilot, or humans using AI) filed as GitHub issues. Use when the user says things like "let's review bug reports," "review issues," "review AI issues," or points at a specific machine-generated-looking issue.
 allowed-tools: Bash(gh *), Bash(git *), Bash(make *), Read, Edit, Write, Grep, Glob
 ---
 
 # Review AI-Generated Bug Reports
 
-Walk through a set of AI-generated GitHub issues with the user, deciding for each one whether to fix it or close as not-a-bug. These reports are machine-generated and often plausible-sounding but wrong, pedantic, or contain regressions that reintroduce old bugs. **Be skeptical** — do not assume the report is correct just because it's detailed.
+Walk through a set of plausibly AI-generated GitHub issues with the user, deciding for each one whether to fix it or close as not-a-bug. These reports are often plausible-sounding but wrong, pedantic, or contain regressions that reintroduce old bugs. **Be skeptical** — do not assume the report is correct just because it's detailed.
 
 ## Workflow per issue
 
