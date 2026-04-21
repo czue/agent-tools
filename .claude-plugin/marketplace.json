@@ -16,7 +16,8 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/release-notes"
+        "./skills/release-notes",
+        "./skills/review-detail-bugs"
       ]
     }
   ]
