@@ -88,8 +88,13 @@ def do_stop():
     AUDIO_FILE.unlink(missing_ok=True)
 
     if text.strip():
-        type_text(text.strip(), method=config.get("paste_method", "clipboard"))
+        stripped = text.strip()
+        method = config.get("paste_method", "clipboard")
+        type_text(stripped, method=method)
         logging.info("Text inserted")
+        preview = stripped if len(stripped) <= 80 else stripped[:77] + "..."
+        title = "Copied to clipboard" if method == "clipboard" else "Transcription done"
+        notify(title, preview)
     else:
         notify("STT", "No speech detected")
         logging.info("Empty transcription")
