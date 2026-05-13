@@ -13,5 +13,5 @@ def load_config() -> dict:
         "backend": os.getenv("STT_BACKEND", "openai"),
         "openai_api_key": os.getenv("STT_OPENAI_API_KEY", "") or os.getenv("OPENAI_API_KEY", ""),
         "model": os.getenv("STT_MODEL", ""),
-        "paste_method": os.getenv("STT_PASTE_METHOD", "type"),
+        "paste_method": os.getenv("STT_PASTE_METHOD", "clipboard"),
     }

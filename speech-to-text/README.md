@@ -6,7 +6,7 @@ press it again to stop — transcribed text appears wherever your cursor is.
 ## How it works
 
 1. **First hotkey press** — starts recording from your microphone
-2. **Second hotkey press** — stops recording, sends audio to a transcription backend, types the result at your cursor
+2. **Second hotkey press** — stops recording, sends audio to a transcription backend, copies the result to your clipboard (paste with Ctrl+V / Ctrl+Shift+V)
 3. Desktop notifications show recording/transcribing status
 
 ## Requirements
@@ -61,7 +61,7 @@ All config is in `.env`:
 | `STT_BACKEND` | `openai` | Transcription backend: `openai` or `faster-whisper` |
 | `STT_OPENAI_API_KEY` | | OpenAI API key (falls back to `OPENAI_API_KEY` env var) |
 | `STT_MODEL` | *(backend default)* | Model name (see below) |
-| `STT_PASTE_METHOD` | `type` | `type` (xdotool keystrokes) or `clipboard` (copies only, paste manually) |
+| `STT_PASTE_METHOD` | `clipboard` | `clipboard` (copies only, paste manually) or `type` (xdotool keystrokes) |
 
 ### Transcription backends
 
@@ -84,6 +84,6 @@ Then set `STT_BACKEND=faster-whisper` in `.env`. Models:
 ## Troubleshooting
 
 - **Logs:** `/tmp/stt-toggle/stt.log`
-- **Text not appearing:** Make sure `STT_PASTE_METHOD=type` (the default). The `clipboard` method only copies to clipboard without pasting.
+- **Text not appearing:** The default `clipboard` method only copies the transcript — paste it yourself with Ctrl+V (or Ctrl+Shift+V in terminals). Set `STT_PASTE_METHOD=type` if you want xdotool to type it directly at the cursor instead (note: can be flaky in some terminals).
 - **No audio captured:** Check that your mic is working (`arecord -d 2 test.wav && aplay test.wav`). The recorder uses `sox`/`rec` if available, otherwise falls back to `ffmpeg`.
 - **Stale state:** If the toggle gets stuck, delete `/tmp/stt-toggle/recorder.pid`.
