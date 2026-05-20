@@ -1,6 +1,6 @@
 ---
 name: morning-review
-description: Walk through your GitHub PR review queue one PR at a time as a thinking aid. Use when the user says things like "let's do the morning review", "let's go through my review queue", "let's do code reviews", or "show me what I need to review". Pulls open review-requested PRs from a configured repo, skips ones already reviewed since the last push, and walks through the rest one-by-one — printing the URL for the user to open in their browser, then producing an independent review for discussion. Appends a session log to a local markdown journal. Does NOT post anything to GitHub.
+description: Walk through your GitHub PR review queue one PR at a time as a thinking aid. Use when the user says things like "let's do the morning review", "let's go through my review queue", "let's do code reviews", or "show me what I need to review". Pulls open review-requested PRs from a configured repo, skips ones already reviewed since the last push or stale beyond a configurable age, and walks through the rest one-by-one — printing the URL for the user to open in their browser, then producing an independent review for discussion. Appends a session log to a local markdown journal. Does NOT post anything to GitHub.
 allowed-tools: Bash(gh *), Read, Write, Edit, SlashCommand
 ---
 
@@ -16,6 +16,7 @@ Users can customize these defaults. If a default is set, use it without promptin
 
 - `default_repo`: `peregrine-io/peregrine`
 - `default_journal_path`: `~/.claude/morning-review.md`
+- `default_stale_after_days`: `30` — PRs whose `updatedAt` is older than this are auto-skipped as stale/dead
 
 ## Workflow
 
@@ -30,27 +31,32 @@ gh search prs --review-requested=@me --state=open --repo <default_repo> \
   --json number,title,author,url,isDraft,additions,deletions,updatedAt
 ```
 
-### 3. Filter out already-reviewed PRs
+### 3. Filter out PRs that don't need review attention
 
-For each PR, check whether the user has submitted a review since the latest push:
+A PR is **skipped** if any of:
+
+- **already reviewed** — user has submitted a review with `submitted_at` newer than the latest commit on the head ref
+- **stale** — `updatedAt` is older than `default_stale_after_days` days ago (these are typically abandoned PRs the author never came back to; if the user does want to look at a stale PR, they can open it directly)
+
+For the already-reviewed check:
 
 ```bash
 gh api repos/<owner>/<repo>/pulls/<number>/reviews --jq '[.[] | select(.user.login == "<user-login>")] | sort_by(.submitted_at) | last'
-gh api repos/<owner>/<repo>/pulls/<number> --jq '.head.sha, .updated_at'
+gh api repos/<owner>/<repo>/commits/<head_sha> --jq .commit.committer.date
 ```
 
-A PR is "already reviewed" if the user has a review with `submitted_at` newer than the last commit push (`pushed_at` on the head ref, or use the latest commit's date — `gh api repos/<o>/<r>/commits/<head_sha> --jq .commit.committer.date`).
+A PR is "already reviewed" if the user has a review with `submitted_at` newer than that commit date.
 
-Get the user's login once at the start: `gh api user --jq .login`.
+Get the user's login once at the start: `gh api user --jq .login`. The PR's head SHA and `updatedAt` come from the `gh search prs` query in step 2.
 
 ### 4. Present the queue
 
 Output a single message with two sections:
 
 ```
-**Already reviewed (N):**
-- #NNNN title — _author_
-- #NNNN title — _author_
+**Skipped (N):**
+- #NNNN title — _author_ — already reviewed
+- #NNNN title — _author_ — stale (45d)
 
 **Queue (M):**
 1. #NNNN title — _author_ — +X/-Y [draft]
@@ -61,7 +67,7 @@ Starting with #NNNN. Open it: <url>
 Tell me when you're ready for my notes.
 ```
 
-If the queue is empty, say so and stop. If the "already reviewed" list is empty, omit that section.
+If the queue is empty, say so and stop. If the skipped list is empty, omit that section.
 
 ### 5. Per-PR loop
 
