@@ -17,7 +17,8 @@
       "strict": false,
       "skills": [
         "./skills/release-notes",
-        "./skills/review-ai-issues"
+        "./skills/review-ai-issues",
+        "./skills/morning-review"
       ]
     }
   ]
