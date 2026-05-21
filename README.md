@@ -12,6 +12,7 @@ Agent tools I'm using in my various workflows.
 - **split-video**: Split wide (3840x1080) side-by-side videos into separate screen and camera files
 - **transcript**: Generate HTML transcripts of Claude Code sessions using claude-code-transcripts
 - **review-ai-issues**: Interactively review plausibly AI-generated bug reports filed as GitHub issues
+- **morning-review**: Walk through your GitHub PR review queue one PR at a time as a thinking aid (no posting to GitHub)
 
 ## Sub-Projects
 
