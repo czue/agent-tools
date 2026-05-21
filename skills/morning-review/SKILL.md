@@ -51,6 +51,7 @@ A PR is **skipped** if any of:
 
 - **already reviewed** — user has submitted a review with `submitted_at` newer than the latest commit on the head ref
 - **stale** — `updatedAt` is older than `default_stale_after_days` days ago (these are typically abandoned PRs the author never came back to; if the user does want to look at a stale PR, they can open it directly)
+- **previously skipped, no change** — the journal's most recent entry for this PR number contains "skip" (case-insensitive) AND the PR's `updatedAt` is older than that journal session's date. If we already skipped it and nothing has changed, skip it again. Reason label: `previously skipped (YYYY-MM-DD)`.
 
 For the already-reviewed check:
 
