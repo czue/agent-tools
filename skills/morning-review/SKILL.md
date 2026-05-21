@@ -16,7 +16,7 @@ Users can customize these defaults. If a default is set, use it without promptin
 
 - `default_repo`: `peregrine-io/peregrine`
 - `default_journal_path`: `~/.claude/morning-review.md`
-- `default_stale_after_days`: `30` — PRs whose `updatedAt` is older than this are auto-skipped as stale/dead
+- `default_stale_after_days`: `14` — PRs whose `updatedAt` is older than this are auto-skipped as stale/dead
 
 ## Workflow
 
