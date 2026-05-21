@@ -20,16 +20,30 @@ Users can customize these defaults. If a default is set, use it without promptin
 
 ## Workflow
 
+### 0. Rename the session
+
+Invoke the `/rename` slash command via `SlashCommand` to retitle the session to `morning review YYYY-MM-DD` (today's date). This makes sessions distinguishable in history:
+
+```
+/rename morning review 2026-05-21
+```
+
+Do this once, at the very start of the workflow.
+
 ### 1. Read the journal tail
 
 Read the last ~100 lines of the journal at `default_journal_path` (create the file if it doesn't exist). This gives continuity — you can mention "last session was 3 days ago, you covered N PRs" if relevant. Don't belabor it; one short sentence at most.
 
 ### 2. Fetch the review queue
 
+Use `gh pr list` (not `gh search prs` — the latter does not support `additions`/`deletions`/`headRefOid`):
+
 ```bash
-gh search prs --review-requested=@me --state=open --repo <default_repo> \
-  --json number,title,author,url,isDraft,additions,deletions,updatedAt
+gh pr list --repo <default_repo> --search "review-requested:@me" --state open \
+  --json number,title,author,url,isDraft,additions,deletions,updatedAt,headRefOid
 ```
+
+This returns everything needed for the queue display AND the already-reviewed check (`headRefOid` is the head commit SHA, used in step 3) in a single call.
 
 ### 3. Filter out PRs that don't need review attention
 
@@ -47,7 +61,7 @@ gh api repos/<owner>/<repo>/commits/<head_sha> --jq .commit.committer.date
 
 A PR is "already reviewed" if the user has a review with `submitted_at` newer than that commit date.
 
-Get the user's login once at the start: `gh api user --jq .login`. The PR's head SHA and `updatedAt` come from the `gh search prs` query in step 2.
+Get the user's login once at the start: `gh api user --jq .login`. The PR's `headRefOid` (head SHA) and `updatedAt` come from the `gh pr list` query in step 2.
 
 ### 4. Present the queue
 
