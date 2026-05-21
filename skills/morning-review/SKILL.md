@@ -87,15 +87,15 @@ If the queue is empty, say so and stop. If the skipped list is empty, omit that 
 
 For each PR in the queue, in order:
 
-1. **Announce the PR**: print `#NNNN — <title>` and the URL on its own line so it's clickable. Include +X/-Y and `[draft]` tag if applicable. **Then stop** — wait for the user to reply.
+1. **Announce the PR**: print `#NNNN — <title>` and the URL on its own line so it's clickable. Include +X/-Y and `[draft]` tag if applicable. A "tell me when you're ready" prompt is fine here — the user needs a moment to open the PR in their browser. **Then stop.**
 
-2. **Wait for the user's signal to proceed.** Any natural-language reply means "go" (e.g. "ok", "ready", "go ahead", or even "this looks small, just summarize it"). If the user instead says something like "skip this one" or "not now", treat that as a skip — go to step 4 with the skip note.
+2. **Wait for the user's reply.** Any natural-language reply means "go" (e.g. "ok", "ready", "go ahead", or even "this looks small, just summarize it"). If the user instead says something like "skip this one" or "not now", treat that as a skip — go to step 4 with the skip note.
 
 3. **Produce the review.** Invoke the existing `review` skill via `SlashCommand` with the PR number:
    ```
    /review <number>
    ```
-   Then stop — wait for the user to read it and discuss. The user may ask follow-up questions about the PR; answer them in line. They will eventually signal they're done with this PR (e.g. "next", "ok moving on", "done with this one", or just a note like "approved" / "I'll comment on the X point").
+   When the review output is complete, **stop without a closing prompt** — no "ready for the next one?", no "let me know when to move on", no "anything else on this one?". The user will read your notes and reply in their own time. The user may ask follow-up questions about the PR; answer them in line. They will eventually signal they're done with this PR (e.g. "next", "ok moving on", "done with this one", or just a note like "approved" / "I'll comment on the X point").
 
 4. **Append a journal line** before moving on. Format:
    ```
@@ -138,5 +138,6 @@ When starting a new session, check whether today's date header already exists at
 
 - **Never write to GitHub.** Reviews are for the user's eyes only. No `gh pr review`, no `gh pr comment`, no `gh api -X POST`, no comments-on-comments, nothing.
 - **Never auto-advance.** Always stop and wait for the user between PRs and between announcing/reviewing a PR.
+- **Once the review is produced, never end a message with a "ready for the next one?" / "shall I move on?" / "let me know when" prompt.** While discussing the code, stopping is the signal — the user will reply when they're done with that PR. Trailing prompts during code discussion are noise. (Exception: the initial announce step *may* end with "tell me when you're ready for my notes" since the user needs a moment to open the PR in their browser.)
 - **Don't re-fetch the queue mid-session** unless the user asks — if a new PR comes in during the session, that's tomorrow's problem.
 - **Use the existing `review` skill** for the actual review pass — don't reimplement that logic here. This skill is the orchestrator, not the reviewer.
