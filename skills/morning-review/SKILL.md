@@ -1,7 +1,7 @@
 ---
 name: morning-review
 description: Walk through your GitHub PR review queue one PR at a time as a thinking aid. Use when the user says things like "let's do the morning review", "let's go through my review queue", "let's do code reviews", or "show me what I need to review". Pulls open review-requested PRs from a configured repo, skips ones already reviewed since the last push or stale beyond a configurable age, and walks through the rest one-by-one — printing the URL for the user to open in their browser, then producing an independent review for discussion. Appends a session log to a local markdown journal. Does NOT post anything to GitHub.
-allowed-tools: Bash(gh *), Read, Write, Edit, SlashCommand
+allowed-tools: Bash(gh *), Read, Write, Edit, Skill
 ---
 
 # Morning Review
@@ -19,16 +19,6 @@ Users can customize these defaults. If a default is set, use it without promptin
 - `default_stale_after_days`: `14` — PRs whose `updatedAt` is older than this are auto-skipped as stale/dead
 
 ## Workflow
-
-### 0. Rename the session
-
-Invoke the `/rename` slash command via `SlashCommand` to retitle the session to `morning review YYYY-MM-DD` (today's date). This makes sessions distinguishable in history:
-
-```
-/rename morning review 2026-05-21
-```
-
-Do this once, at the very start of the workflow.
 
 ### 1. Read the journal tail
 
@@ -92,10 +82,8 @@ For each PR in the queue, in order:
 
 2. **Wait for the user's reply.** Any natural-language reply means "go" (e.g. "ok", "ready", "go ahead", or even "this looks small, just summarize it"). If the user instead says something like "skip this one" or "not now", treat that as a skip — go to step 4 with the skip note.
 
-3. **Produce the review.** Invoke the existing `review` skill via `SlashCommand` with the PR number:
-   ```
-   /review <number>
-   ```
+3. **Produce the review.** Invoke the existing `review` skill via the `Skill` tool, passing the PR number as the argument. (If the `Skill` tool isn't available in this harness, follow the `review` skill's workflow inline: `gh pr view <n>`, `gh pr diff <n>`, then a sectioned review.)
+
    When the review output is complete, **stop without a closing prompt** — no "ready for the next one?", no "let me know when to move on", no "anything else on this one?". The user will read your notes and reply in their own time. The user may ask follow-up questions about the PR; answer them in line. They will eventually signal they're done with this PR (e.g. "next", "ok moving on", "done with this one", or just a note like "approved" / "I'll comment on the X point").
 
 4. **Append a journal line** before moving on. Format:
@@ -114,6 +102,16 @@ When the queue is exhausted, write a session footer to the journal:
 ```
 
 Then summarize for the user in one sentence: "Done — N reviewed, M skipped, journal updated."
+
+Finally, suggest a session rename the user can copy-paste. Generate a short, distinctive title from the PRs actually reviewed (not skipped) — pick 2-4 keywords from their titles that capture the theme. Examples:
+
+- 3 PRs about `list_bolt_items`, `find_bolt_item folder id`, `supersede plan on stop` → `/rename morning review 2026-05-22 — bolt items, plan supersede`
+- 1 PR `feat(embeddings): partial update mode` → `/rename morning review 2026-05-22 — embeddings partial update`
+- 0 PRs reviewed (all skipped) → skip the rename suggestion entirely; nothing distinctive to title with
+
+Format the suggestion as a single fenced code block so it's one-click selectable. Prefix with one line: `💡 Rename this session:` Don't elaborate further — the user pastes or ignores.
+
+**Note on `/rename` itself:** The agent cannot invoke `/rename` directly in most harnesses (the `SlashCommand` tool typically isn't available). This is why we suggest a copy-paste line at the end rather than running it programmatically. Do not attempt to call `/rename` via any tool — print the suggested line and stop.
 
 ## Journal format
 
