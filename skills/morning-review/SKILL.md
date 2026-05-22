@@ -107,7 +107,7 @@ Finally, suggest a session rename the user can copy-paste. Generate a short, dis
 
 - 3 PRs about `list_bolt_items`, `find_bolt_item folder id`, `supersede plan on stop` → `/rename morning review 2026-05-22 — bolt items, plan supersede`
 - 1 PR `feat(embeddings): partial update mode` → `/rename morning review 2026-05-22 — embeddings partial update`
-- 0 PRs reviewed (all skipped) → skip the rename suggestion entirely; nothing distinctive to title with
+- 0 PRs reviewed (all skipped or empty queue) → `/rename morning review 2026-05-22 — nothing reviewed`
 
 Format the suggestion as a single fenced code block so it's one-click selectable. Prefix with one line: `💡 Rename this session:` Don't elaborate further — the user pastes or ignores.
 
