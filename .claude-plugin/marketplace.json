@@ -18,7 +18,8 @@
       "skills": [
         "./skills/release-notes",
         "./skills/review-ai-issues",
-        "./skills/morning-review"
+        "./skills/morning-review",
+        "./skills/talk"
       ]
     }
   ]

@@ -13,6 +13,7 @@ Agent tools I'm using in my various workflows.
 - **transcript**: Generate HTML transcripts of Claude Code sessions using claude-code-transcripts
 - **review-ai-issues**: Interactively review plausibly AI-generated bug reports filed as GitHub issues
 - **morning-review**: Walk through your GitHub PR review queue one PR at a time as a thinking aid (no posting to GitHub)
+- **talk**: Discussion-only mode (`/talk`) — talk through an idea or decision before any code is written or action taken
 
 ## Sub-Projects
 
