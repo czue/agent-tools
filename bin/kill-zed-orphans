@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#
+# kill-zed-orphans
+# ----------------------------------------
+# Kill Zed language-server / extension helper processes (pylsp, the node
+# typescript/eslint/tailwind/html servers, ty, etc.) that are no longer
+# attached to a live Zed instance.
+#
+# A helper is "dangling" if walking up its parent chain never reaches a
+# running `zed-editor` process. That covers two situations:
+#   - Zed was fully quit  -> every helper is an orphan -> all are killed.
+#   - Zed is still running -> only crash-leftovers reparented to init/systemd
+#     are killed; helpers under the live Zed tree are left alone.
+#
+# Usage:
+#   kill-zed-orphans            kill dangling helpers
+#   kill-zed-orphans -n|--dry-run   list what would be killed, kill nothing
+
+set -euo pipefail
+
+HELPER_RE='/\.local/share/zed/(languages|extensions)/'
+dry_run=0
+case "${1:-}" in
+	-n | --dry-run) dry_run=1 ;;
+	-h | --help)
+		grep '^#' "$0" | sed 's/^# \{0,1\}//;1d'
+		exit 0
+		;;
+	"") ;;
+	*)
+		echo "unknown arg: $1 (try --help)" >&2
+		exit 2
+		;;
+esac
+
+# Walk the parent chain of $1; succeed if any ancestor is a live zed-editor.
+has_zed_ancestor() {
+	local pid=$1 guard=0 comm
+	while [[ "$pid" -gt 1 && $guard -lt 50 ]]; do
+		comm=$(cat "/proc/$pid/comm" 2>/dev/null) || return 1
+		[[ "$comm" == "zed-editor" || "$comm" == "zed" ]] && return 0
+		pid=$(awk '/^PPid:/{print $2}' "/proc/$pid/status" 2>/dev/null) || return 1
+		[[ -n "$pid" ]] || return 1
+		((guard++))
+	done
+	return 1
+}
+
+mem_used() { free -m | awk '/^Mem:/{print $2-$7}'; } # total - available
+
+mapfile -t helpers < <(pgrep -f "$HELPER_RE" 2>/dev/null || true)
+
+declare -a victims=()
+total_kb=0
+for pid in "${helpers[@]}"; do
+	[[ -d "/proc/$pid" ]] || continue
+	# Skip zombies: they hold no memory and can't be killed (parent must reap).
+	state=$(awk '/^State:/{print $2}' "/proc/$pid/status" 2>/dev/null) || continue
+	[[ "$state" == "Z" ]] && continue
+	if ! has_zed_ancestor "$pid"; then
+		rss=$(awk '/^VmRSS:/{print $2}' "/proc/$pid/status" 2>/dev/null || echo 0)
+		victims+=("$pid")
+		total_kb=$((total_kb + ${rss:-0}))
+		cmd=$(tr '\0' ' ' <"/proc/$pid/cmdline" 2>/dev/null | cut -c1-70)
+		printf '  pid %-8s %6d MB  %s\n' "$pid" "$((${rss:-0} / 1024))" "$cmd"
+	fi
+done
+
+if [[ ${#victims[@]} -eq 0 ]]; then
+	echo "No dangling Zed processes."
+	exit 0
+fi
+
+echo ""
+printf '%d dangling process(es), ~%d MB resident.\n' "${#victims[@]}" "$((total_kb / 1024))"
+
+if [[ $dry_run -eq 1 ]]; then
+	echo "(dry run — nothing killed)"
+	exit 0
+fi
+
+before=$(mem_used)
+kill "${victims[@]}" 2>/dev/null || true
+sleep 2
+for pid in "${victims[@]}"; do
+	[[ -d "/proc/$pid" ]] && kill -9 "$pid" 2>/dev/null || true
+done
+sleep 1
+after=$(mem_used)
+
+printf 'Killed. Mem used %d MB -> %d MB (freed %d MB).\n' "$before" "$after" "$((before - after))"
