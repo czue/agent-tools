@@ -29,7 +29,7 @@ Generate a PDF invoice by pulling hours from Toggl and rendering to PDF. The too
    cd /home/czue/src/personal/agent-tools/invoice-gen && uv run python generate.py --end <end_date> --client <client> --dry-run
    ```
    If `$2` (start date) is provided, add `--start <start_date>`.
-   Show the user the hours and amount and ask for confirmation before generating.
+   Show the user the hours, amount, working days, and average hours per working day, and ask for confirmation before generating.
 
 4. **Generate the invoice**:
    ```bash
@@ -37,7 +37,7 @@ Generate a PDF invoice by pulling hours from Toggl and rendering to PDF. The too
    ```
    Add `--start` and `--description` if provided by the user.
 
-5. **Report results**: Show the output path and the invoice summary (hours, rate, amount).
+5. **Report results**: Show the output path and the invoice summary (hours, rate, amount, working days, avg hours/working day).
 
 ## CLI Options
 

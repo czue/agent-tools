@@ -10,6 +10,19 @@ from toggl import get_project_id, get_total_hours, get_workspace_id
 from pdf import render_invoice_html, generate_pdf
 
 
+def count_working_days(start: str, end: str) -> int:
+    """Count weekdays (Mon-Fri) in the inclusive date range."""
+    s = datetime.strptime(start, "%Y-%m-%d").date()
+    e = datetime.strptime(end, "%Y-%m-%d").date()
+    count = 0
+    d = s
+    while d <= e:
+        if d.weekday() < 5:
+            count += 1
+        d += timedelta(days=1)
+    return count
+
+
 def format_date_range(start: str, end: str) -> str:
     """Format date range like 'Feb 4 - 20, 2026'."""
     s = datetime.strptime(start, "%Y-%m-%d")
@@ -50,6 +63,11 @@ def main(start: str | None, end: str, client: str, description: str, output_dir:
     click.echo(f"  Hours: {hours}")
     click.echo(f"  Rate: {client_config.currency} {client_config.rate:.2f}/hr")
     click.echo(f"  Amount: {client_config.currency} {amount:,.2f}")
+
+    working_days = count_working_days(start, end)
+    if working_days:
+        click.echo(f"  Working days: {working_days} (Mon-Fri, holidays not excluded)")
+        click.echo(f"  Avg hours/working day: {hours / working_days:.2f}")
 
     if dry_run:
         click.echo("\n[Dry run] No PDF generated.")
