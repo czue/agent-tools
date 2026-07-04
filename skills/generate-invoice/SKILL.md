@@ -18,7 +18,7 @@ Generate a PDF invoice by pulling hours from Toggl and rendering to PDF. The too
 
 1. **Resolve the end date**:
    - If `$0` is provided, use it.
-   - Otherwise, use `AskUserQuestion` to ask: "What end date for the invoice?" with options for today's date and end of last month.
+   - Otherwise: billing periods normally end on the **3rd** or the **20th** of the month. If today is the day right after a cycle boundary (e.g. the 4th or the 21st), use the boundary that just passed (the 3rd/20th) — no need to ask; the dry-run confirmation in step 3 covers it. If today doesn't fall cleanly after a boundary, it's ambiguous — use `AskUserQuestion` with the most recent 3rd-or-20th boundary as the recommended option, plus the last complete day (yesterday).
 
 2. **Resolve the client**:
    - If `$1` is provided, use it.
