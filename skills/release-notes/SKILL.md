@@ -20,8 +20,10 @@ Generate professional release notes for code changes between git refs. Can be ru
 
 Users can customize these defaults. If a default is set and the corresponding argument is not provided, use the default without prompting.
 
-- `default_repo_path`: (none)
-- `default_release_notes_path`: (none)
+- `default_repo_path`: `/home/czue/src/personal/pegasus`
+  - Note: this repo's default branch is `develop` (releases are merged to `origin/main`, so
+    "changes since the last release" is usually `origin/main..HEAD`).
+- `default_release_notes_path`: the skill's built-in [examples.md](examples.md)
 
 ## Workflow
 
@@ -44,7 +46,9 @@ Users can customize these defaults. If a default is set and the corresponding ar
 
 5. **Draft release notes** following the guidelines below.
 
-6. **Output handling**: If `$4` is provided, write to that file. Otherwise, display the notes and ask if user wants to save them.
+6. **Output handling**: If `$4` is provided, write to that file. Otherwise, display the notes and ask if user wants to save them. For Pegasus, the destination is one of two files in the pegasus-docs repo (`~/src/personal/pegasus-docs/src/content/docs/`) — ask which unless it's clear from context:
+   - `release-notes-dev.mdx` for unreleased versions: replace the "There haven't been any updates since the last release." placeholder and omit the `*Month Day, Year*` date line (it gets added when the notes move to the main file on release).
+   - `release-notes.mdx` for shipped releases: add the new entry above the previous one, including the date line.
 
 ## Style Guidelines
 
@@ -55,6 +59,7 @@ Users can customize these defaults. If a default is set and the corresponding ar
 - **Never mention cookiecutter** - translate cookiecutter markup changes to human terms
 - **Ignore commits starting with "invisible:" or "tool:"** - don't mention them or their files
 - For library upgrades, only mention specific libraries if explicitly called out in commits
+- Use bold sparingly — only on the bullets that deserve attention, not on every item
 
 ## Additional Resources
 
