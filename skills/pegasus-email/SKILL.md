@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, AskUserQuestion, Bash(git ls-remote*)
 
 # Pegasus Monthly Email
 
-Draft the monthly marketing email Cory sends to SaaS Pegasus's prospect and customer lists. It's a casual, first-person recap of what shipped recently, framed around whatever story/theme Cory is currently telling (not just a bulleted changelog). The two lists currently get the identical email — no free/paid split for now (see Style Guidelines).
+Draft the monthly marketing email Cory sends to SaaS Pegasus's prospect and customer lists. It's a casual, first-person recap of what shipped recently, framed around whatever story/theme Cory is currently telling (not just a bulleted changelog). There are always two variants (prospect and customer) — the prospect version has more narrative/salesy language; the customer version is trimmed down and sometimes has more upgrade detail. Only the prospect version gets archived (see Archive Mode); the customer variant isn't tracked separately.
 
 This skill has two modes. Figure out which one applies from the user's request:
 
@@ -49,8 +49,9 @@ Triggered when the user shares a finished/as-sent version of the email (pasted, 
 
 1. Determine the version range it covers (ask if not obvious from context).
 2. Resolve the OSS repo's current `main` SHA: `git ls-remote https://github.com/<default_oss_repo>.git main` (no local clone needed) — this becomes next cycle's diff base, so resolve it fresh at archive time rather than reusing whatever was computed during drafting.
-3. Write it to `history_dir/YYYY-MM.md` (month it was sent), using the History File Format below.
-4. If the user mentions *why* they changed something from the draft (tone, structure, specific phrasing), treat that as durable style guidance — ask if they want it folded into the Style Guidelines section of this SKILL.md, and edit this file if so.
+3. **Archive only the prospect version.** It's the primary style reference. The customer version isn't tracked — no need to note or summarize how it differs.
+4. Write it to `history_dir/YYYY-MM.md` (month it was sent), using the History File Format below.
+5. If the user mentions *why* they changed something from the draft (tone, structure, specific phrasing), treat that as durable style guidance — ask if they want it folded into the Style Guidelines section of this SKILL.md, and edit this file if so.
 
 ### History File Format
 
@@ -74,7 +75,7 @@ Based on Cory's past emails (see `history/`):
 - **Minor/miscellaneous items** (dependency bumps, small fixes, docs) don't need their own section or a bullet list — compress into a single CTA sentence linking to the full release notes, e.g.: "For the complete release notes — including X, Y, and Z — check out the [full changelog](<default_release_notes_url>)."
 - **Sign-off varies** each time ("Hope you're doing well," / "Hope you're having a good start to July!" / etc.) — don't reuse the same line verbatim across emails. A `p.s.` inviting replies/feedback is a nice occasional touch, not mandatory.
 - **Continuity**: when there's a natural thread, callback to something from the previous email (a stated goal, an ongoing project, a running bit) rather than starting cold each month — check the most recent `history/` file for something to reference.
-- **Free vs. paid tier**: currently not called out separately even though the email goes to both prospect and customer lists — most releases apply to both. Flag it to the user if a release has a meaningfully different impact on free vs. paid users; don't split the email preemptively.
+- **Free vs. paid tier**: draft one shared email by default — most releases apply to both lists equally. Flag it to the user if a release has a meaningfully different impact on free vs. paid/existing-customer users (e.g. a breaking upgrade note); that becomes a small customer-only addition rather than two fully separate drafts.
 - **Avoid**: generic marketing transitions, corporate phrasing ("guardrails to move fast safely"), restating the same point across multiple sections.
 
 ## Additional Resources
