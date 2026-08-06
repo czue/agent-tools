@@ -76,7 +76,7 @@ Based on Cory's past emails (see `history/`):
 - **Minor/miscellaneous items** (dependency bumps, small fixes, docs) don't need their own section or a bullet list — compress into a single CTA sentence linking to the full release notes, e.g.: "For the complete release notes — including X, Y, and Z — check out the [full changelog](<default_release_notes_url>)."
 - **Sign-off varies** each time ("Hope you're doing well," / "Hope you're having a good start to July!" / etc.) — don't reuse the same line verbatim across emails. A `p.s.` inviting replies/feedback is a nice occasional touch, not mandatory.
 - **Continuity**: when there's a natural thread, callback to something from the previous email (a stated goal, an ongoing project, a running bit) rather than starting cold each month — check the most recent `history/` file for something to reference.
-- **Free vs. paid tier**: draft one shared email by default — most releases apply to both lists equally. Flag it to the user if a release has a meaningfully different impact on free vs. paid/existing-customer users (e.g. a breaking upgrade note); that becomes a small customer-only addition rather than two fully separate drafts.
+- **Free vs. paid tier**: draft one shared email by default — most releases apply to both lists equally. If the release notes' `### Upgrading` section (see `default_release_notes_path`) flags friction for customized projects, that's customer-only content to add — prospects have no existing codebase to upgrade, so it doesn't apply to them.
 - **Avoid**: generic marketing transitions, corporate phrasing ("guardrails to move fast safely"), restating the same point across multiple sections.
 
 ## Additional Resources
