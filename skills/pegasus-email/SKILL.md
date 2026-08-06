@@ -21,18 +21,18 @@ This skill has two modes. Figure out which one applies from the user's request:
 
 - `default_release_notes_path`: `/home/czue/src/personal/pegasus-docs/src/content/docs/release-notes.mdx`
 - `default_release_notes_url`: `https://docs.saaspegasus.com/release-notes/` (the CTA link in the email)
-- `history_dir`: `<skill-dir>/history/` (created on first archive)
+- `history_dir`: `<skill-dir>/history/` — one file per sent email, named `YYYY-MM.md`. Doubles as both the style reference and the archive; there's no separate curated-examples file.
 
 ## Draft Mode
 
 1. **Resolve since_version**:
    - If `$0` is provided, use it.
-   - Else, look for the most recent file in `history_dir` (sorted by filename, which is `YYYY-MM.md`) and read its header line for the version it covered up to (see History File Format below).
-   - Else (no history yet), use `AskUserQuestion` to ask which version was last covered.
+   - Else, look for the most recent file in `history_dir` (sorted by filename, `YYYY-MM.md`) whose `Sent:` header line includes a `covers <since_version> → <latest_version>` clause, and use its `latest_version`. Some early history entries predate version tracking and won't have this clause — skip past those to an older one that does, if any.
+   - Else (nothing parseable), use `AskUserQuestion` to ask which version was last covered.
 
 2. **Read the release notes** from `default_release_notes_path`. Collect every `## Version X.Y.Z` section *after* since_version, up to the newest. These are written in reverse-chronological order (newest first), so since_version marks the stopping point going down the file.
 
-3. **Read style references**: the skill's own [examples.md](examples.md), plus the 2-3 most recent files in `history_dir` if any exist. History entries are real, as-sent emails and take priority over `examples.md` for calibrating current voice — `examples.md` is the older, evergreen baseline.
+3. **Read style references**: the 3-4 most recent files in `history_dir`. These are real, as-sent emails — the most recent are the strongest signal for current voice. With only a handful of emails total, it's fine to just read all of them.
 
 4. **Draft the email** following the Style Guidelines below. Group the release notes by theme/story, not by version number — a single email usually spans several versions.
 
@@ -45,7 +45,7 @@ This skill has two modes. Figure out which one applies from the user's request:
 Triggered when the user shares a finished/as-sent version of the email (pasted, or "save this one", "log this as sent", etc.).
 
 1. Determine the version range it covers (ask if not obvious from context).
-2. Write it to `history_dir/YYYY-MM.md` (month it was sent), using the History File Format below. Create `history_dir` if it doesn't exist yet.
+2. Write it to `history_dir/YYYY-MM.md` (month it was sent), using the History File Format below.
 3. If the user mentions *why* they changed something from the draft (tone, structure, specific phrasing), treat that as durable style guidance — ask if they want it folded into the Style Guidelines section of this SKILL.md, and edit this file if so.
 
 ### History File Format
@@ -56,11 +56,11 @@ Sent: YYYY-MM-DD — covers <since_version> → <latest_version>
 <the full as-sent email text>
 ```
 
-The `Sent:` header line is what draft mode parses to find the next since_version — keep it as the first line.
+The `Sent:` header line is what draft mode parses to find the next since_version — keep it as the first line. (Entries from before this skill existed use `Sent: YYYY-MM (day unknown; predates version tracking in this skill)` with no `covers` clause — draft mode's since_version lookup skips those.)
 
 ## Style Guidelines
 
-Based on Cory's past emails (see [examples.md](examples.md) and `history/`):
+Based on Cory's past emails (see `history/`):
 
 - **Voice**: casual, first-person, contractions throughout. Cory narrating what *he* did/built, not a press release. Sentence-fragment asides are fine ("Tests, linters, etc.").
 - **Vary sentence rhythm** — mix short punchy lines with longer ones. Avoid uniform, essay-like paragraphs; that reads as too polished/marketing-y.
@@ -73,5 +73,4 @@ Based on Cory's past emails (see [examples.md](examples.md) and `history/`):
 
 ## Additional Resources
 
-- [examples.md](examples.md) — curated evergreen style examples (older emails, hand-picked for voice)
-- `history/` — archived as-sent emails, most recent = strongest style signal (created on first archive)
+- `history/` — every past email, one file per month sent. Also the style reference (see Draft Mode step 3) — most recent files are the strongest signal.
