@@ -14,6 +14,7 @@ Agent tools I'm using in my various workflows.
 - **review-ai-issues**: Interactively review plausibly AI-generated bug reports filed as GitHub issues
 - **morning-review**: Walk through your GitHub PR review queue one PR at a time as a thinking aid (no posting to GitHub)
 - **talk**: Discussion-only mode (`/talk`) — talk through an idea or decision before any code is written or action taken
+- **pegasus-email**: Draft the monthly SaaS Pegasus marketing email from recent release notes (and archive sent ones for style continuity)
 
 ## Sub-Projects
 
