@@ -35,7 +35,7 @@ This skill has two modes. Figure out which one applies from the user's request:
 
 3. **Read style references**: the 3-4 most recent files in `history_dir`. These are real, as-sent emails — the most recent are the strongest signal for current voice. With only a handful of emails total, it's fine to just read all of them.
 
-4. **Draft the email** following the Style Guidelines below. Group the release notes by theme/story, not by version number — a single email usually spans several versions.
+4. **Draft the email** following the Style Guidelines below, including a proposed subject line. Group the release notes by theme/story, not by version number — a single email usually spans several versions.
 
 5. **Generate the OSS diff link**: find the `OSS main SHA:` line in the same history file used for since_version (step 1). Build `https://github.com/<default_oss_repo>/compare/<that_sha>...main` and report it alongside the draft for the user to drop in wherever they want — don't embed it into the email body automatically, since placement is their call. If no history file has this line yet (e.g. the feature is new), say so and skip the link; it'll be available starting next cycle once one email has been archived with a SHA recorded.
 
@@ -58,11 +58,12 @@ Triggered when the user shares a finished/as-sent version of the email (pasted, 
 ```markdown
 Sent: YYYY-MM-DD — covers <since_version> → <latest_version>
 OSS main SHA: <sha resolved at archive time>
+Subject: <subject line>
 
 <the full as-sent email text>
 ```
 
-The `Sent:` header line is what draft mode parses to find the next since_version — keep it as the first line. (Entries from before this skill existed use `Sent: YYYY-MM (day unknown; predates version tracking in this skill)` with no `covers` clause — draft mode's since_version lookup skips those.) The `OSS main SHA:` line is what draft mode uses to build the diff link — older entries won't have it either, so the diff link just isn't available until the first email is archived post-feature.
+The `Sent:` header line is what draft mode parses to find the next since_version — keep it as the first line. (Entries from before this skill existed use `Sent: YYYY-MM (day unknown; predates version tracking in this skill)` with no `covers` clause — draft mode's since_version lookup skips those.) The `OSS main SHA:` line is what draft mode uses to build the diff link — older entries won't have it either, so the diff link just isn't available until the first email is archived post-feature. The `Subject:` line is a style reference for future subject lines (added starting with the 2026-08 entry — earlier ones don't have it).
 
 ## Style Guidelines
 
