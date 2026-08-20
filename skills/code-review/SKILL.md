@@ -31,7 +31,9 @@ write operation. Output is for the user to read in chat only.
 
 4. **Review the diff**, checking for:
    - **Correctness bugs** — real bugs, not nitpicks. Trace through the actual
-     logic; don't flag something as broken without confirming it.
+     logic; don't flag something as broken without confirming it. Includes
+     things like unparametrized SQL, open redirects, SSRF via user-controlled
+     URLs, and swallowed exceptions/silent fallbacks.
    - **CLAUDE.md compliance** — only flag violations the relevant CLAUDE.md
      actually calls out, not general best-practice opinions.
    - **In-file comment compliance** — read existing comments in the touched files
@@ -41,17 +43,30 @@ write operation. Output is for the user to read in chat only.
    Do not check git blame/history or prior PR comments — deliberately out of
    scope for this version (too slow for the value).
 
-5. **Filter before you say anything.** Drop:
+5. **Filter before you say anything.** A finding survives only if the author
+   would fix it once aware of it, and its impact is provable — not speculated.
+   Drop:
    - Pre-existing issues (not introduced by this diff)
    - Nitpicks a senior engineer wouldn't bother raising
    - Anything a linter/typechecker/CI would already catch
    - Issues on lines the PR didn't touch
    - Changes that are clearly intentional and related to the PR's stated purpose
+   - Speculative "this might break X" claims where X isn't actually traced through
 
 6. **Report in chat** — no heading needed beyond the summary. Call out things
    done well, not just problems; this version of the review is meant to be a
    read for someone who wants the full picture, not just a bug list. For each
-   issue, state what's wrong and why it matters, with a file:line reference.
+   issue, tag it with a priority ([P0] drop everything / [P1] urgent / [P2]
+   normal / [P3] nice to have), state what's wrong and why it matters, with a
+   file:line reference. End with an overall verdict: **Correct** (no blocking
+   issues) or **Needs attention** (has P0/P1/P2 findings).
+
+   After the verdict, add a **Human reviewer callouts** section for anything
+   non-blocking the user should still know about before approving: new or
+   changed dependencies, database migrations, auth/permission changes,
+   backwards-incompatible schema/API changes, or irreversible/destructive
+   operations. Only include callouts that apply; omit the section entirely if
+   none do.
 
 7. **If there's nothing to flag**, say so plainly after the summary — don't
    manufacture a finding to have something to say.
