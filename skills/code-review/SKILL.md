@@ -40,9 +40,6 @@ write operation. Output is for the user to read in chat only.
      (e.g. "do not change without updating X", "must stay in sync with Y") and
      check whether the diff violates guidance already written there.
 
-   Do not check git blame/history or prior PR comments — deliberately out of
-   scope for this version (too slow for the value).
-
 5. **Filter before you say anything.** A finding survives only if the author
    would fix it once aware of it, and its impact is provable — not speculated.
    Drop:
