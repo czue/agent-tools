@@ -7,31 +7,27 @@ argument-hint: "[files...]"
 
 # Deslop
 
-Strip the tells of LLM-written code from the current change. Right now this is
-scoped to **comments and docstrings only** — never change code behavior. (The
-scope will grow as other consistent patterns show up; add them below as they do.)
+Strip the tells of LLM-written code from the current change. Scope is
+**comments and docstrings only** — never change code behavior.
 
 ## What to operate on
 
-- If files are given as arguments, those files.
-- Otherwise, the current branch's changes: `git diff main...HEAD --name-only`
-  plus anything uncommitted (`git diff --name-only`, `git ls-files --others
-  --exclude-standard`). If you wrote the code earlier in this session you
-  already know the files — still run the diff so you don't miss any.
+- Files given as arguments, if any.
+- Otherwise the current branch's changes: `git diff main...HEAD --name-only`,
+  `git diff --name-only`, and `git ls-files --others --exclude-standard`.
 
 Only touch comments in hunks this branch added or changed. Leave pre-existing
-comments alone even if they're bad; that's a separate cleanup.
+comments alone.
 
 ## The test
 
-For every comment or docstring in the change, ask: **would this be useful to
-someone reading the file cold, with no knowledge of this PR or the conversation
-that produced it?** If not, delete it. If yes, make it as short as it can be
-while still being useful.
+**Would this be useful to someone reading the file cold, with no knowledge of
+this PR or the conversation that produced it?** If not, delete it. If yes, make
+it as short as it can be.
 
 ## What to delete
 
-**Narration of what the code does.** The code already says it.
+**Narration of what the code does.**
 
 ```python
 # Iterate over the users and send each one an email
@@ -49,8 +45,7 @@ the conversation, or a previous version of the code. Watch for "previously",
 # to handle the filtering, which also fixes the timezone issue.
 qs = Event.objects.filter(start__gte=now)
 ```
-→ no comment. (If the timezone fix is genuinely non-obvious, keep *that*:
-`# filter in DB so start is compared in UTC`.)
+→ no comment, or `# filter in DB so start is compared in UTC` if that's non-obvious.
 
 **Section banners and restated names.**
 
@@ -63,21 +58,16 @@ def get_user_email(user):
 ```
 → no banner, no docstring.
 
-**Docstrings that enumerate the obvious.** A three-line function does not need
-Args/Returns sections. If the parameter names already say what they are, don't
-repeat them.
+**Docstrings that enumerate the obvious.** No Args/Returns sections on
+three-line functions. Don't repeat what the parameter names already say.
 
 ## What to keep (but shorten)
 
 **Why comments** — constraints, workarounds, non-obvious behavior, "must stay
-in sync with X", links to issues or docs. These earn their place, but they are
-almost always too long. A *why* is usually five to ten words. If it's three
-lines, it's either explaining the code (delete) or wrapping a short reason in
-narrative (cut to the reason).
+in sync with X", links. A *why* is usually five to ten words.
 
-The most common bloat: **stating the reason, then walking through the failure
-mechanism.** Keep the reason. Drop the chain of what-would-go-wrong-otherwise —
-if someone needs it, they'll remove the line and find out.
+The most common bloat is **stating the reason, then walking through the failure
+mechanism.** Keep the reason. Drop the mechanism.
 
 ```
 - # Tracebacks are stored up to 100 KB. That is far too much to repeat for every run in a list, and
@@ -103,11 +93,10 @@ if someone needs it, they'll remove the line and find out.
 + # legacy jobs can have a null trigger_conditions so allow them (unlike Create)
 ```
 
-Notice the rewrites are sometimes *less precise* than the originals. That's
-fine. A comment is a pointer, not a proof.
+The rewrites lose precision. That's fine — a comment is a pointer, not a proof.
 
 **Docstrings that describe everything the function doesn't do.** Say what it
-does. Leave out the list of things it leaves alone.
+does.
 
 ```
 -  * Repoint every open tab for one notebook at the draft the agent just edited, so the edit is
@@ -127,35 +116,32 @@ does. Leave out the list of things it leaves alone.
 +         since it can be dependent on variables provided by the job.
 ```
 
-**Docstrings on public/non-trivial functions** — keep a one-line summary. Add
-detail only for things the signature doesn't tell you (side effects, raised
-exceptions, surprising return shapes).
+**Docstrings on public/non-trivial functions** — one-line summary. Add detail
+only for what the signature doesn't tell you (side effects, raised exceptions,
+surprising return shapes).
 
-**Match the surrounding file.** If the code around the change (not from this
-branch) has no docstrings, new functions in it probably shouldn't either. If
-the module uses full Google-style docstrings everywhere, follow that.
+**Match the surrounding file.** If nearby code has no docstrings, new functions
+don't need them either. If the module uses full Google-style docstrings, follow
+that.
 
 ## Never touch
 
-- `TODO` / `FIXME` / `HACK` markers (shorten the text if bloated, but keep the marker)
+- `TODO` / `FIXME` / `HACK` markers (shorten the text, keep the marker)
 - Tooling directives: `# noqa`, `# type: ignore`, `# pragma:`, `# fmt:`, `eslint-disable`, etc.
 - License headers
 - Comments containing a URL or ticket reference
-- Anything in a file the branch didn't change
+- Files the branch didn't change
 
 ## Language
 
-Plain, short, lowercase-after-`#` is fine. Cut these on sight: "in order to",
-"note that", "this function is responsible for", "ensures that", "handles the
-case where", "it is important to", "we use X here to". Say the thing.
+Plain and short. Cut on sight: "in order to", "note that", "this function is
+responsible for", "ensures that", "handles the case where", "it is important
+to", "we use X here to".
 
 ## Workflow
 
-1. Get the file list (above). Read each changed hunk.
-2. Apply the edits directly. Don't ask per-comment — the user wants the cleanup
-   done, not a review.
-3. When unsure whether a *why* comment is load-bearing, keep it (shortened).
-   Deleting a real reason costs more than leaving a short comment.
+1. Get the file list. Read each changed hunk.
+2. Edit directly. Don't ask per-comment.
+3. When unsure whether a *why* is load-bearing, keep it, shortened.
 4. Don't commit. Finish with a short summary: files touched, roughly how many
-   comments removed vs. rewritten, and call out any you kept because you weren't
-   sure — those are the ones worth a human glance.
+   comments removed vs. rewritten, and any you kept because you weren't sure.
