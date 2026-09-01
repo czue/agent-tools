@@ -126,5 +126,7 @@ to", "we use X here to".
 1. Get the file list. Read each changed hunk.
 2. Edit directly. Don't ask per-comment.
 3. When unsure whether a *why* is load-bearing, keep it, shortened.
-4. Don't commit. Finish with a short summary: files touched, roughly how many
+4. Don't run tests, linters, or the app afterward. You only changed comments
+   and docstrings; nothing depends on them (doctests are the rare exception).
+5. Don't commit. Finish with a short summary: files touched, roughly how many
    comments removed vs. rewritten, and any you kept because you weren't sure.
