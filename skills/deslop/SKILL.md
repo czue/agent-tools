@@ -12,11 +12,14 @@ Strip the tells of LLM-written code from the current change. Scope is
 
 ## What to operate on
 
-- Files given as arguments, if any.
+- If called during a coding session, by default operate on the files you just 
+  created and edited. The goal is to tidy up the changeset before they reach
+  a human review.
+- If specified, the changeset of a given pull request / branch diff.
 - Otherwise the current branch's changes: `git diff main...HEAD --name-only`,
   `git diff --name-only`, and `git ls-files --others --exclude-standard`.
 
-Only touch comments in hunks this branch added or changed. Leave pre-existing
+Only touch comments in hunks the branch added or changed. Leave pre-existing
 comments alone.
 
 ## The test
@@ -47,19 +50,6 @@ qs = Event.objects.filter(start__gte=now)
 ```
 → no comment, or `# filter in DB so start is compared in UTC` if that's non-obvious.
 
-**Section banners and restated names.**
-
-```python
-# ---- Helper functions ----
-
-def get_user_email(user):
-    """Get the user's email."""
-    return user.email
-```
-→ no banner, no docstring.
-
-**Docstrings that enumerate the obvious.** No Args/Returns sections on
-three-line functions. Don't repeat what the parameter names already say.
 
 ## What to keep (but shorten)
 
@@ -116,9 +106,6 @@ does.
 +         since it can be dependent on variables provided by the job.
 ```
 
-**Docstrings on public/non-trivial functions** — one-line summary. Add detail
-only for what the signature doesn't tell you (side effects, raised exceptions,
-surprising return shapes).
 
 **Match the surrounding file.** If nearby code has no docstrings, new functions
 don't need them either. If the module uses full Google-style docstrings, follow
@@ -126,10 +113,6 @@ that.
 
 ## Never touch
 
-- `TODO` / `FIXME` / `HACK` markers (shorten the text, keep the marker)
-- Tooling directives: `# noqa`, `# type: ignore`, `# pragma:`, `# fmt:`, `eslint-disable`, etc.
-- License headers
-- Comments containing a URL or ticket reference
 - Files the branch didn't change
 
 ## Language
