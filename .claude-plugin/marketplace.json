@@ -19,7 +19,8 @@
         "./skills/release-notes",
         "./skills/review-ai-issues",
         "./skills/morning-review",
-        "./skills/talk"
+        "./skills/talk",
+        "./skills/deslop"
       ]
     }
   ]
