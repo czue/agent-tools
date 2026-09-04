@@ -85,6 +85,19 @@ mechanism.** Keep the reason. Drop the mechanism.
 
 The rewrites lose precision. That's fine — a comment is a pointer, not a proof.
 
+**Constants, thresholds, and config values.** Say what the value controls —
+what it means and what happens on either side of it. Don't justify the number.
+
+```
+- # A joined log under this size is cheap enough to hand over whole, which saves a workspace write
+- # and a follow-up read.
++ # Max tokens the tool can return from logs directly (larger goes to the agent workspace).
+_INLINE_TOKEN_BUDGET = 2000
+```
+
+A justification ("cheap enough", "saves a write") answers "why this number?" —
+a reader wants "what does this number do?"
+
 **Docstrings that describe everything the function doesn't do.** Say what it
 does.
 
